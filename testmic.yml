@@ -1,0 +1,238 @@
+openapi: 3.0.3
+info:
+  title: Store Service
+  description: API para consulta de lojas (cacheable, TTL configurável)
+  version: 1.0.0
+
+servers:
+  - url: https://api.exemplo.com/v1
+    description: Servidor principal
+
+paths:
+  /stores:
+    get:
+      summary: Consulta de lojas disponíveis
+      description: Retorna a lista de lojas com informações completas.
+      operationId: getStores
+      parameters:
+        - name: lat
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Latitude atual do usuário.
+        - name: lon
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+          description: Longitude atual do usuário.
+        - name: radius
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Raio de busca em quilômetros.
+      responses:
+        '200':
+          description: Lista de lojas retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Store'
+              examples:
+                default:
+                  summary: Exemplo de resposta
+                  value:
+                    data:
+                      - id: "c3003292-f12d-405d-8f88-b1118bb0b9f8"
+                        name: "ANA SHOPPING"
+                        description: "Anápolis Shopping"
+                        code: "25680"
+                        address:
+                          street: "Av.Universitária"
+                          number: "2221"
+                          neighborhood: "Vl Sta Isabel"
+                          city: "ANAPOLIS"
+                          state: "GO"
+                          zipCode: "75083-015"
+                          latitude: -16.326
+                          longitude: -48.953
+                        regional: "Regional Centro-Oeste"
+                        sector: "Setor 3"
+                        division: "Divisão 2"
+                        scheduleDescription:
+                          - "Segunda-feira: 08:00 às 18:00"
+                          - "Terça-feira: 08:00 às 18:00"
+                          - "Quarta-feira: 08:00 às 18:00"
+                          - "Quinta-feira: 08:00 às 18:00"
+                          - "Sexta-feira: 08:00 às 18:00"
+                        schedule:
+                          - dayOfWeek: "1"
+                            day: "segunda-feira"
+                            openingTime: "08:00"
+                            closingTime: "18:00"
+                          - dayOfWeek: "2"
+                            day: "terça-feira"
+                            openingTime: "08:00"
+                            closingTime: "18:00"
+                          - dayOfWeek: "3"
+                            day: "quarta-feira"
+                            openingTime: "08:00"
+                            closingTime: "18:00"
+                          - dayOfWeek: "4"
+                            day: "quinta-feira"
+                            openingTime: "08:00"
+                            closingTime: "18:00"
+                          - dayOfWeek: "5"
+                            day: "sexta-feira"
+                            openingTime: "08:00"
+                            closingTime: "18:00"
+                        ownership: "ZAMP"
+                        availableShippings:
+                          - name: "Comer na loja"
+                            code: "eat-in"
+                            active: true
+                          - name: "Retirada"
+                            code: "take-out"
+                            active: true
+                          - name: "Drive-thru"
+                            code: "drive-thru"
+                            active: true
+                        availableRewards:
+                          - name: "Cupons"
+                            code: "coupons"
+                            active: true
+                          - name: "Loyalty"
+                            code: "loyalty"
+                            active: true
+                          - name: "Código de desconto"
+                            code: "voucher"
+                            active: true
+                        images:
+                          - code: "store_front"
+                            url: "https://example.com/image1.jpg"
+                            description: "Front view of the store"
+                          - code: "store_inside"
+                            url: "https://example.com/image2.jpg"
+                            description: "Inside seating area"
+                        distanceInKm: 842.22
+                        isOpen: true
+                        closesSoon: false
+        '500':
+          description: Erro interno do servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "Erro inesperado ao consultar lojas"
+components:
+  schemas:
+    Store:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        code:
+          type: string
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+            number:
+              type: string
+            neighborhood:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zipCode:
+              type: string
+            latitude:
+              type: number
+              format: double
+            longitude:
+              type: number
+              format: double
+        regional:
+          type: string
+        sector:
+          type: string
+        division:
+          type: string
+        scheduleDescription:
+          type: array
+          items:
+            type: string
+        schedule:
+          type: array
+          items:
+            type: object
+            properties:
+              dayOfWeek:
+                type: string
+              day:
+                type: string
+              openingTime:
+                type: string
+              closingTime:
+                type: string
+        ownership:
+          type: string
+        availableShippings:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              code:
+                type: string
+              active:
+                type: boolean
+        availableRewards:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              code:
+                type: string
+              active:
+                type: boolean
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+              url:
+                type: string
+              description:
+                type: string
+        distanceInKm:
+          type: number
+          format: double
+        isOpen:
+          type: boolean
+        closesSoon:
+          type: boolean
